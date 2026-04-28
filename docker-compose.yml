@@ -1,0 +1,57 @@
+services:
+  database:
+    build:
+      context: ./database
+      dockerfile: Dockerfile
+    container_name: kupipodariday-database
+    restart: always
+    env_file:
+      - .env
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-kupipodariday}
+      POSTGRES_USER: ${POSTGRES_USER:-student}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-student}
+      PGDATA: ${POSTGRES_PGDATA:-/var/lib/postgresql/data/pgdata}
+    volumes:
+      - postgres-data:${POSTGRES_PGDATA:-/var/lib/postgresql/data/pgdata}
+    networks:
+      - kupipodariday-network
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: kupipodariday-backend
+    restart: always
+    env_file:
+      - .env
+    depends_on:
+      - database
+    ports:
+      - "4000:4000"
+    networks:
+      - kupipodariday-network
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+      args:
+        REACT_APP_API_URL: ${REACT_APP_API_URL:-http://localhost:4000}
+    container_name: kupipodariday-frontend
+    restart: always
+    env_file:
+      - .env
+    depends_on:
+      - backend
+    ports:
+      - "8081:80"
+    networks:
+      - kupipodariday-network
+
+volumes:
+  postgres-data:
+
+networks:
+  kupipodariday-network:
+    driver: bridge
