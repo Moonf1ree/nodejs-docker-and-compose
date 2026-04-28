@@ -44,6 +44,6 @@
 
 ## Данные для ревью
 
-IP адрес x.x.x.x  
-Frontend https://...  
-Backend https://...
+IP адрес 81.26.188.97  
+Frontend https://moonf.nomorepartiessite.ru  
+Backend https://api.moonf.nomorepartiessite.ru
